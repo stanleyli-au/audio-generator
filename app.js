@@ -47,6 +47,25 @@ function drawOscilloscope() {
         oscCtx.fillStyle = '#090d16';
         oscCtx.fillRect(0, 0, oscCanvas.width, oscCanvas.height);
 
+        // Draw grid and labels
+        oscCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        oscCtx.lineWidth = 1;
+        
+        // Center line
+        oscCtx.beginPath();
+        oscCtx.moveTo(0, oscCanvas.height / 2);
+        oscCtx.lineTo(oscCanvas.width, oscCanvas.height / 2);
+        oscCtx.stroke();
+
+        // Labels
+        oscCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        oscCtx.font = '10px Inter';
+        oscCtx.fillText('+1.0', 5, 15);
+        oscCtx.fillText('0.0', 5, oscCanvas.height / 2 + 3);
+        oscCtx.fillText('-1.0', 5, oscCanvas.height - 5);
+        oscCtx.fillText('Time ->', oscCanvas.width - 40, oscCanvas.height - 5);
+
+        // Draw waveform
         oscCtx.lineWidth = 2;
         oscCtx.strokeStyle = '#38bdf8';
         oscCtx.beginPath();
@@ -84,6 +103,33 @@ function drawSpectrum() {
         specCtx.fillStyle = '#090d16';
         specCtx.fillRect(0, 0, specCanvas.width, specCanvas.height);
 
+        // Draw grid and labels
+        specCtx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        specCtx.lineWidth = 1;
+        
+        const labels = ['0', '5k', '10k', '15k', '20k'];
+        specCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        specCtx.font = '10px Inter';
+        
+        for (let i = 0; i < labels.length; i++) {
+            const x = (i / (labels.length - 1)) * specCanvas.width;
+            specCtx.beginPath();
+            specCtx.moveTo(x, 0);
+            specCtx.lineTo(x, specCanvas.height);
+            specCtx.stroke();
+            
+            let textX = x;
+            if (i === 0) textX = 5;
+            if (i === labels.length - 1) textX = x - 35; // Adjusted for "Hz"
+            specCtx.fillText(labels[i] + ' Hz', textX, specCanvas.height - 5);
+        }
+
+        // Volume labels (Y axis)
+        specCtx.fillText('-30 dB', 5, 15);
+        specCtx.fillText('-65 dB', 5, specCanvas.height / 2);
+        specCtx.fillText('-100 dB', 5, specCanvas.height - 20);
+
+        // Draw bars
         const barWidth = (specCanvas.width / bufferLength) * 2.5;
         let barHeight;
         let x = 0;
